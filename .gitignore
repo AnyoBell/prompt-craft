@@ -1,0 +1,6 @@
+node_modules/
+.wrangler/
+.venv/
+__pycache__/
+*.csv
+report.txt
