@@ -31,6 +31,7 @@
     } catch (e) { /* analytics must never break the page */ }
   }
 
+  window.pcTrack = function (e, d) { send(e, d); };
   send('pageview');
 
   // Module and FAQ opens

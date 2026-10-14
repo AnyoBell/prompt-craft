@@ -3,490 +3,207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Prompt Craft — AI Prompt Engineering, taught plainly</title>
+<title>Prompt Craft: the AI literacy game</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #182420;
-    --ink-soft: #24352F;
-    --chalk: #F1ECDD;
-    --chalk-dim: #C9C2AC;
-    --paper: #F3EFE3;
-    --paper-line: #DAD3BC;
-    --amber: #E3A23A;
-    --amber-deep: #B87A20;
-    --pine: #3C5A50;
-    --rule: rgba(241,236,221,0.14);
-    --serif: 'Fraunces', Georgia, serif;
-    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --maxw: 920px;
-  }
-  html { scroll-padding-top: env(safe-area-inset-top, 0px); box-sizing: border-box; }
-  *, *::before, *::after { box-sizing: inherit; }
-  body {
-    margin: 0;
-    background: var(--ink);
-    color: var(--chalk);
-    font-family: var(--sans);
-    line-height: 1.55;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    -webkit-font-smoothing: antialiased;
-  }
-  img, svg { max-width: 100%; }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
-  a { color: inherit; }
-
-  /* ---- Nav ---- */
-  header.site {
-    position: sticky; top: 0; top: env(safe-area-inset-top, 0px);
-    z-index: 50;
-    background: rgba(24,36,32,0.92);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--rule);
-  }
-  .nav {
-    max-width: var(--maxw); margin: 0 auto; padding: 16px 24px;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  }
-  .wordmark { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; letter-spacing: 0.2px; display: flex; align-items: baseline; gap: 8px; }
-  .wordmark span.dot { color: var(--amber); font-size: 1.4rem; line-height: 0; }
-  .navlinks { display: flex; gap: 26px; font-size: 0.94rem; }
-  .navlinks a { text-decoration: none; color: var(--chalk-dim); border-bottom: 1px solid transparent; padding-bottom: 2px; }
-  .navlinks a:hover { color: var(--chalk); border-color: var(--amber); }
-  .nav-cta {
-    background: var(--amber); color: var(--ink); font-weight: 600; font-size: 0.9rem;
-    padding: 9px 18px; border-radius: 3px; text-decoration: none; white-space: nowrap;
-  }
-  .nav-cta:hover { background: #f0b355; }
-  @media (max-width: 700px) { .navlinks { display: none; } }
-
-  /* ---- Hero ---- */
-  .hero { padding: 72px 0 64px; }
-  .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: start; }
-  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
-  .kicker {
-    font-family: var(--sans); font-size: 0.86rem; color: var(--amber);
-    font-weight: 600; margin: 0 0 18px;
-  }
-  h1.hero-title {
-    font-family: var(--serif); font-weight: 500; font-size: clamp(2.3rem, 5vw, 3.4rem);
-    line-height: 1.08; margin: 0 0 20px; color: var(--chalk);
-    max-width: 14ch;
-  }
-  h1.hero-title em { font-style: italic; color: var(--amber); font-weight: 500; }
-  .hero-sub { font-size: 1.1rem; color: var(--chalk-dim); max-width: 46ch; margin: 0 0 30px; }
-  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
-  .btn-primary {
-    background: var(--amber); color: var(--ink); font-weight: 600; text-decoration: none;
-    padding: 13px 24px; border-radius: 3px; font-size: 0.98rem; display: inline-block;
-  }
-  .btn-primary:hover { background: #f0b355; }
-  .btn-ghost {
-    color: var(--chalk); text-decoration: none; font-size: 0.98rem; font-weight: 500;
-    border-bottom: 1px solid var(--chalk-dim); padding-bottom: 2px;
-  }
-  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
-  .hero-note { margin-top: 22px; font-size: 0.85rem; color: var(--chalk-dim); }
-
-  /* ---- Prompt builder widget ---- */
-  .builder {
-    background: var(--paper); color: var(--ink); border-radius: 6px;
-    padding: 26px; border: 1px solid var(--paper-line);
-    box-shadow: 0 24px 50px -20px rgba(0,0,0,0.55);
-  }
-  .builder-label { font-family: var(--sans); font-size: 0.78rem; color: var(--pine); font-weight: 600; margin-bottom: 14px; }
-  .builder-field { margin-bottom: 14px; }
-  .builder-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); margin-bottom: 5px; }
-  .builder-field input, .builder-field textarea {
-    width: 100%; font-family: var(--sans); font-size: 0.92rem; padding: 9px 10px;
-    border: 1px solid var(--paper-line); border-radius: 4px; background: #fff; color: var(--ink);
-    resize: vertical;
-  }
-  .builder-field input:focus, .builder-field textarea:focus { outline: 2px solid var(--pine); outline-offset: 1px; }
-  .builder-out {
-    margin-top: 16px; background: var(--ink); color: var(--chalk); border-radius: 4px;
-    padding: 14px 16px; font-size: 0.86rem; line-height: 1.6; font-family: 'SFMono-Regular', Menlo, monospace;
-    white-space: pre-wrap; min-height: 90px;
-  }
-  .builder-out .fill { color: var(--amber); }
-
-  /* ---- Section shells ---- */
-  section { padding: 64px 0; border-top: 1px solid var(--rule); }
-  .section-head { max-width: 640px; margin-bottom: 40px; }
-  .eyebrow { color: var(--amber); font-weight: 600; font-size: 0.86rem; margin: 0 0 12px; }
-  h2 {
-    font-family: var(--serif); font-weight: 500; font-size: clamp(1.7rem, 3.4vw, 2.3rem);
-    margin: 0 0 14px; color: var(--chalk); line-height: 1.15;
-  }
-  .section-sub { color: var(--chalk-dim); font-size: 1.02rem; max-width: 56ch; }
-
-  /* ---- Why pillars ---- */
-  .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  @media (max-width: 760px) { .pillars { grid-template-columns: 1fr; } }
-  .pillar { border-left: 2px solid var(--pine); padding-left: 18px; }
-  .pillar h3 { font-family: var(--serif); font-weight: 500; font-size: 1.2rem; margin: 0 0 8px; color: var(--chalk); }
-  .pillar p { color: var(--chalk-dim); font-size: 0.95rem; margin: 0; }
-
-  /* ---- Modules accordion ---- */
-  .module {
-    border: 1px solid var(--rule); border-radius: 6px; margin-bottom: 14px; overflow: hidden;
-    background: var(--ink-soft);
-  }
-  .module summary {
-    list-style: none; cursor: pointer; padding: 20px 22px;
-    display: flex; align-items: center; gap: 18px; justify-content: space-between;
-  }
-  .module summary::-webkit-details-marker { display: none; }
-  .module-head { display: flex; align-items: baseline; gap: 18px; }
-  .module-num { font-family: var(--serif); font-size: 1.3rem; color: var(--amber); font-weight: 500; min-width: 2ch; }
-  .module-title-wrap h3 { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; margin: 0 0 4px; color: var(--chalk); }
-  .module-title-wrap p { margin: 0; color: var(--chalk-dim); font-size: 0.88rem; }
-  .module-toggle {
-    width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--chalk-dim);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--chalk-dim);
-    font-size: 1.05rem; transition: transform 0.2s ease;
-  }
-  .module[open] .module-toggle { transform: rotate(45deg); border-color: var(--amber); color: var(--amber); }
-  .module-body { padding: 0 22px 24px 22px; }
-  .module-body ul { margin: 0; padding-left: 20px; }
-  .module-body li { margin-bottom: 10px; color: var(--chalk-dim); font-size: 0.96rem; }
-  .module-body li strong { color: var(--chalk); font-weight: 600; }
-  .module-body li:last-child { margin-bottom: 0; }
-
-  /* ---- Outcomes ---- */
-  .outcomes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 32px; }
-  @media (max-width: 700px) { .outcomes { grid-template-columns: 1fr; } }
-  .outcome { display: flex; gap: 12px; align-items: flex-start; }
-  .outcome .mark { color: var(--amber); font-family: var(--serif); font-size: 1.1rem; line-height: 1.4; }
-  .outcome p { margin: 0; color: var(--chalk-dim); font-size: 0.96rem; }
-
-  /* ---- Pricing ---- */
-  .price-card {
-    background: var(--paper); color: var(--ink); border-radius: 8px; padding: 40px;
-    display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center;
-    border: 1px solid var(--paper-line);
-  }
-  @media (max-width: 760px) { .price-card { grid-template-columns: 1fr; padding: 28px; } }
-  .price-card h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 500; margin: 0 0 10px; }
-  .price-card p.desc { color: var(--ink-soft); font-size: 0.96rem; margin: 0 0 18px; max-width: 42ch; }
-  .price-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
-  .price-list li { font-size: 0.9rem; color: var(--ink-soft); padding-left: 20px; position: relative; }
-  .price-list li::before { content: '—'; position: absolute; left: 0; color: var(--pine); }
-  .price-box { text-align: left; border-left: 1px solid var(--paper-line); padding-left: 36px; }
-  @media (max-width: 760px) { .price-box { border-left: none; border-top: 1px solid var(--paper-line); padding-left: 0; padding-top: 24px; } }
-  .price-amount { font-family: var(--serif); font-size: 2.4rem; font-weight: 500; color: var(--ink); }
-  .price-amount span { font-size: 1rem; font-weight: 400; color: var(--ink-soft); }
-  .price-cta {
-    display: inline-block; margin-top: 16px; background: var(--pine); color: var(--chalk);
-    text-decoration: none; padding: 12px 22px; border-radius: 3px; font-weight: 600; font-size: 0.94rem;
-  }
-  .price-cta:hover { background: #2c453c; }
-  .price-fine { font-size: 0.78rem; color: var(--ink-soft); margin-top: 12px; }
-
-  /* ---- FAQ ---- */
-  .faq-item { border-bottom: 1px solid var(--rule); padding: 20px 0; }
-  .faq-item summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: center; font-weight: 600; color: var(--chalk); font-size: 1rem; }
-  .faq-item summary::-webkit-details-marker { display: none; }
-  .faq-item .plus { color: var(--amber); font-size: 1.2rem; flex-shrink: 0; transition: transform 0.2s ease; }
-  .faq-item[open] .plus { transform: rotate(45deg); }
-  .faq-item p { color: var(--chalk-dim); margin: 12px 0 0; font-size: 0.95rem; max-width: 62ch; }
-
-  /* ---- Footer ---- */
-  footer { padding: 48px 0 calc(48px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--rule); }
-  .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 20px; align-items: center; }
-  .footer-grid p { margin: 0; color: var(--chalk-dim); font-size: 0.85rem; }
-  .footer-links { display: flex; gap: 20px; }
-  .footer-links a { text-decoration: none; color: var(--chalk-dim); font-size: 0.85rem; }
-  .footer-links a:hover { color: var(--amber); }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-  }
+:root{--ink:#182420;--ink2:#24352F;--chalk:#F1ECDD;--dim:#C9C2AC;--paper:#F3EFE3;--amber:#E3A23A;--pine:#3C5A50;--rule:rgba(241,236,221,.14);--serif:'Fraunces',Georgia,serif;--sans:'Inter',-apple-system,'Segoe UI',sans-serif}
+html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--ink);color:var(--chalk);font-family:var(--sans);line-height:1.5;padding-top:env(safe-area-inset-top,0px);-webkit-font-smoothing:antialiased}
+a{color:inherit}.wrap{max-width:760px;margin:0 auto;padding:0 20px}[hidden]{display:none!important}
+header{border-bottom:1px solid var(--rule)}
+.nav{max-width:760px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mark{font-family:var(--serif);font-weight:600;font-size:1.25rem}.mark i{color:var(--amber);font-style:normal}
+.pill{display:flex;gap:10px;align-items:baseline;font-size:.82rem;color:var(--dim)}.pill b{color:var(--amber);font-weight:600}
+.hero{padding:22px 0 36px}
+.screen{background:var(--ink2);border:1px solid var(--rule);border-radius:8px;padding:22px}
+.top{display:flex;justify-content:space-between;font-size:.82rem;color:var(--dim);margin-bottom:8px}
+.prog{height:4px;background:var(--rule);border-radius:2px;overflow:hidden;margin-bottom:22px}.prog div{height:100%;width:0;background:var(--amber);transition:width .3s}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(1.55rem,4.2vw,2.15rem);line-height:1.18;margin:0 0 8px}
+.hint{color:var(--dim);font-size:.9rem;margin:0 0 18px}
+.opts{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin:18px 0 14px}
+.opt{max-width:94%;text-align:left;font:500 .95rem/1.4 var(--sans);color:var(--chalk);background:transparent;border:1.5px solid var(--amber);border-radius:16px 16px 4px 16px;padding:11px 15px;cursor:pointer}
+.opt:hover:not(:disabled){background:rgba(227,162,58,.13)}
+.opt:disabled{cursor:default;opacity:.5}.opt.best{opacity:1;background:var(--pine);border-color:var(--pine)}.opt.sel{opacity:1;box-shadow:0 0 0 2px var(--chalk)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.fb{background:var(--paper);color:var(--ink);border-radius:6px;padding:14px 16px}
+.fb .pts{font-weight:600;color:var(--pine);margin:0 0 4px;font-size:.9rem}.fb p{margin:0 0 12px;font-size:.95rem}
+.btn{display:inline-block;background:var(--amber);color:var(--ink);font:600 .95rem var(--sans);padding:11px 20px;border-radius:3px;border:0;cursor:pointer}.btn:hover{background:#f0b355}
+.fb .btn{background:var(--pine);color:var(--chalk)}
+.big{font-family:var(--serif);font-size:2rem;margin:4px 0}.muted{color:var(--dim);font-size:.9rem}
+.save{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 6px}
+.save input{flex:1;min-width:160px;font:1rem var(--sans);padding:10px 12px;border-radius:3px;border:1px solid var(--dim);background:var(--ink);color:var(--chalk)}
+.lk{background:none;border:0;color:var(--dim);text-decoration:underline;cursor:pointer;font:.85rem var(--sans);padding:0;margin-top:10px}
+section.s{padding:36px 0;border-top:1px solid var(--rule)}
+h2{font-family:var(--serif);font-weight:500;font-size:1.5rem;margin:0 0 14px}
+.worlds{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(max-width:560px){.worlds{grid-template-columns:1fr}}
+.w{border-left:2px solid var(--pine);padding:2px 0 2px 14px}.w b{display:block;font-family:var(--serif);font-weight:500;font-size:1.05rem}.w span{color:var(--dim);font-size:.9rem}
+ol.lb{margin:0;padding:0;list-style:none;counter-reset:r}
+.lb li{counter-increment:r;display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--rule)}
+.lb li::before{content:counter(r);color:var(--amber);font-family:var(--serif);min-width:1.6ch}.lb li span{flex:1}.lb li em{font-style:normal;color:var(--dim)}
+footer{padding:30px 0 calc(30px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);color:var(--dim);font-size:.84rem}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-
-<header class="site">
-  <div class="nav">
-    <div class="wordmark">Prompt Craft<span class="dot">.</span></div>
-    <nav class="navlinks">
-      <a href="#modules">Modules</a>
-      <a href="#outcomes">What you'll gain</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
-    </nav>
-    <a class="nav-cta" href="#pricing">Reserve a seat</a>
-  </div>
-</header>
-
+<header><div class="nav"><div class="mark">Prompt Craft<i>.</i></div><div class="pill"><b id="lv">Level 1 Curious</b><span id="xp">0 XP</span></div></div></header>
 <main>
-  <section class="hero" style="border-top:none;">
-    <div class="wrap hero-grid">
-      <div>
-        <p class="kicker">A short course, taught on campus</p>
-        <h1 class="hero-title">Learn to talk to <em>AI</em> like you actually know what you're doing.</h1>
-        <p class="hero-sub">A four-module workshop on using AI honestly and well — for studying, writing, and thinking, without letting it think for you.</p>
-        <div class="hero-actions">
-          <a class="btn-primary" href="#pricing">Reserve a seat</a>
-          <a class="btn-ghost" href="#modules">See the modules</a>
-        </div>
-        <p class="hero-note">Four sessions · small groups · no prior AI experience needed</p>
-      </div>
-
-      <div class="builder">
-        <p class="builder-label">Try it — build a prompt</p>
-        <div class="builder-field">
-          <label for="f-goal">Subject and goal</label>
-          <input id="f-goal" type="text" placeholder="Explain photosynthesis for my bio exam">
-        </div>
-        <div class="builder-field">
-          <label for="f-limit">Limitations</label>
-          <input id="f-limit" type="text" placeholder="Keep it under 200 words, no jargon">
-        </div>
-        <div class="builder-field">
-          <label for="f-example">Example (optional)</label>
-          <input id="f-example" type="text" placeholder="Explain it like you'd explain a recipe">
-        </div>
-        <div class="builder-out" id="builder-out">Fill in the fields above to see your prompt take shape.</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="why">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Before the modules</p>
-        <h2>People are wary of what they don't understand</h2>
-        <p class="section-sub">This course starts with the part most people skip: what AI is actually good for, where it fails, and how to use it without it using you.</p>
-      </div>
-      <div class="pillars">
-        <div class="pillar">
-          <h3>Not a shortcut</h3>
-          <p>AI can explain your homework. It shouldn't do your homework. We draw that line clearly, early.</p>
-        </div>
-        <div class="pillar">
-          <h3>A tool, not an oracle</h3>
-          <p>Used well, AI is a study partner that never gets tired of your questions. Used badly, it's a crutch.</p>
-        </div>
-        <div class="pillar">
-          <h3>It gets things wrong</h3>
-          <p>AI states false things with total confidence. You'll learn to catch it — and why that skill matters more every year.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="modules">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">The course</p>
-        <h2>Four modules, in order</h2>
-        <p class="section-sub">Each session builds on the last — from the ground rules, to writing a good prompt, to using AI as a real study partner.</p>
-      </div>
-
-      <details class="module" open>
-        <summary>
-          <div class="module-head">
-            <span class="module-num">01</span>
-            <div class="module-title-wrap">
-              <h3>AI academic integrity</h3>
-              <p>Ground rules before you touch a keyboard</p>
-            </div>
-          </div>
-          <span class="module-toggle">+</span>
-        </summary>
-        <div class="module-body">
-          <ul>
-            <li><strong>No cheating.</strong> Where the line sits between getting help and getting AI to do the work for you.</li>
-            <li><strong>AI as a tool for learning.</strong> Using it to check your reasoning, not replace it.</li>
-            <li><strong>Hallucinations.</strong> Why AI invents facts confidently, and how to catch it before it costs you a grade.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="module">
-        <summary>
-          <div class="module-head">
-            <span class="module-num">02</span>
-            <div class="module-title-wrap">
-              <h3>How to structure a good prompt</h3>
-              <p>The four pieces every strong prompt has</p>
-            </div>
-          </div>
-          <span class="module-toggle">+</span>
-        </summary>
-        <div class="module-body">
-          <ul>
-            <li><strong>Subject and goal.</strong> Say what you're working on and what you actually need — clearly, not vaguely.</li>
-            <li><strong>Limitations.</strong> Length, tone, reading level, format — spell out the constraints or the AI will guess.</li>
-            <li><strong>Re-ups.</strong> Your first answer is a draft. Learn to push back and refine it.</li>
-            <li><strong>Examples.</strong> Show the AI what "good" looks like instead of describing it.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="module">
-        <summary>
-          <div class="module-head">
-            <span class="module-num">03</span>
-            <div class="module-title-wrap">
-              <h3>What to ask</h3>
-              <p>Turning AI into an actual study partner</p>
-            </div>
-          </div>
-          <span class="module-toggle">+</span>
-        </summary>
-        <div class="module-body">
-          <ul>
-            <li><strong>Explanations.</strong> Getting a concept explained, not just defined.</li>
-            <li><strong>Specific modes of explaining.</strong> Ask for an analogy, a diagram in words, a walkthrough — whatever fits the topic.</li>
-            <li><strong>Adjustments for your learning style.</strong> Simpler, more visual, more technical — you can ask for all of it.</li>
-            <li><strong>Summarization.</strong> Turning a dense reading into something you can actually hold onto.</li>
-            <li><strong>Finding gaps in your own understanding.</strong> Using AI to test what you don't know yet, not just confirm what you do.</li>
-          </ul>
-        </div>
-      </details>
-
-      <details class="module">
-        <summary>
-          <div class="module-head">
-            <span class="module-num">04</span>
-            <div class="module-title-wrap">
-              <h3>Studying with AI</h3>
-              <p>Putting it all to work before an exam</p>
-            </div>
-          </div>
-          <span class="module-toggle">+</span>
-        </summary>
-        <div class="module-body">
-          <ul>
-            <li><strong>Flashcards.</strong> Turning your notes into a deck AI generates and you actually use.</li>
-            <li><strong>Study guides.</strong> Getting a structured guide out of scattered material.</li>
-            <li><strong>Quizzes.</strong> Testing yourself with AI-generated questions before the real thing does.</li>
-          </ul>
-        </div>
-      </details>
-    </div>
-  </section>
-
-  <section id="outcomes">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">By the end</p>
-        <h2>What you'll walk away with</h2>
-      </div>
-      <div class="outcomes">
-        <div class="outcome"><span class="mark">＋</span><p>A clear, personal sense of where AI help ends and academic dishonesty begins.</p></div>
-        <div class="outcome"><span class="mark">＋</span><p>A repeatable structure for writing prompts that actually get you what you need.</p></div>
-        <div class="outcome"><span class="mark">＋</span><p>The habit of checking AI's answers instead of trusting them by default.</p></div>
-        <div class="outcome"><span class="mark">＋</span><p>A study workflow — flashcards, guides, quizzes — you can reuse in every class.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="pricing">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Enrollment</p>
-        <h2>Reserve your seat</h2>
-        <p class="section-sub">Small groups, held on campus. Seats are limited so the format stays hands-on.</p>
-      </div>
-      <div class="price-card">
-        <div>
-          <h3>Prompt Craft — the full course</h3>
-          <p class="desc">All four modules, delivered across four sessions, with take-home worksheets and a printed reference sheet for prompt structure.</p>
-          <ul class="price-list">
-            <li>Four in-person sessions</li>
-            <li>Worksheets and a one-page prompt reference card</li>
-            <li>Small group format — plenty of time for questions</li>
-          </ul>
-        </div>
-        <div class="price-box">
-          <div class="price-amount">$45 <span>one-time</span></div>
-          <a class="price-cta" href="mailto:hello@promptcraft.course?subject=Reserve%20my%20seat%20-%20Prompt%20Craft">Reserve your seat</a>
-          <p class="price-fine">Payment link goes here once set up — email reserves your spot for now.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="faq">
-    <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Questions</p>
-        <h2>Before you sign up</h2>
-      </div>
-
-      <details class="faq-item" open>
-        <summary>Is this against my school's AI policy?<span class="plus">+</span></summary>
-        <p>No — the first module is built around this exact question. You'll leave with a clear, defensible sense of what's allowed, and how to use AI in a way that holds up under any professor's policy.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Do I need any experience with AI tools?<span class="plus">+</span></summary>
-        <p>None. The course assumes you've maybe typed a question into a chatbot once and nothing more. Everything is built from there.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What do I need to bring?<span class="plus">+</span></summary>
-        <p>A laptop or phone with access to any free AI chat tool, and something you're currently studying — an actual class of yours makes the practice stick.</p>
-      </details>
-      <details class="faq-item">
-        <summary>Is this a for-credit class?<span class="plus">+</span></summary>
-        <p>No — it's an independent workshop, not a credit-bearing course. It's built to be useful alongside whatever you're already taking.</p>
-      </details>
-      <details class="faq-item">
-        <summary>What if I can't make all four sessions?<span class="plus">+</span></summary>
-        <p>Reach out before enrolling — recordings or a modified schedule may be possible depending on group size.</p>
-      </details>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap footer-grid">
-    <p>Prompt Craft — an independent AI literacy workshop.</p>
-    <div class="footer-links">
-      <a href="mailto:hello@promptcraft.course">Contact</a>
-      <a href="#pricing">Enroll</a>
-    </div>
+<section class="hero"><div class="wrap"><div class="screen">
+  <div id="play">
+    <div class="top"><span id="cat"></span><span id="rd"></span></div>
+    <div class="prog"><div id="pg"></div></div>
+    <h1 id="q"></h1>
+    <p class="hint" id="hint">Pick the message you'd send. Free to play, no sign-up.</p>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb" hidden><p class="pts" id="pts"></p><p id="msg"></p><button class="btn" id="nx" type="button"></button></div>
   </div>
-</footer>
+  <div id="end" hidden>
+    <div class="muted">Final round done</div>
+    <div class="big" id="el"></div>
+    <div class="muted" id="es"></div>
+    <div class="save" id="save"><input id="nick" maxlength="16" placeholder="Pick a nickname" aria-label="Nickname"><button class="btn" id="sv" type="button">Join the leaderboard</button></div>
+    <p class="muted" id="sm"></p>
+    <button class="lk" id="again" type="button">Play again</button>
+  </div>
+</div></div></section>
 
+<section class="s" id="modules"><div class="wrap">
+  <h2>Four worlds to level through</h2>
+  <div class="worlds">
+    <div class="w"><b>Integrity</b><span>Where help ends and cheating begins, and how to spot AI mistakes.</span></div>
+    <div class="w"><b>Prompting</b><span>Goal, limits, examples, and follow-ups that get real answers.</span></div>
+    <div class="w"><b>Asking</b><span>Explanations that fit you, summaries, and finding your gaps.</span></div>
+    <div class="w"><b>Studying</b><span>Flashcards, study guides, and quizzes from your own notes.</span></div>
+  </div>
+</div></section>
+
+<section class="s" id="leaderboard"><div class="wrap">
+  <h2>Campus leaderboard</h2>
+  <p class="muted" id="lbn" hidden>The leaderboard opens soon. Play now and your score will be ready.</p>
+  <ol class="lb" id="lb"></ol>
+</div></section>
+</main>
+<footer><div class="wrap">Prompt Craft, an independent AI literacy game. <a href="mailto:hello@promptcraft.course">Contact</a></div></footer>
+
+<script src="tracker.js" data-endpoint="" defer></script>
 <script>
-(function () {
-  var goal = document.getElementById('f-goal');
-  var limit = document.getElementById('f-limit');
-  var example = document.getElementById('f-example');
-  var out = document.getElementById('builder-out');
-
-  function render() {
-    var g = goal.value.trim();
-    var l = limit.value.trim();
-    var e = example.value.trim();
-
-    if (!g && !l && !e) {
-      out.textContent = 'Fill in the fields above to see your prompt take shape.';
-      return;
-    }
-
-    var parts = [];
-    if (g) { parts.push(g + '.'); } else { parts.push('[ your subject and goal ].'); }
-    if (l) { parts.push('Keep it within these limits: ' + l + '.'); }
-    if (e) { parts.push('Here\'s an example of the style I want: ' + e + '.'); }
-    parts.push('If anything is unclear, ask me before answering.');
-
-    out.textContent = parts.join(' ');
-  }
-
-  [goal, limit, example].forEach(function (el) {
-    el.addEventListener('input', render);
-  });
+(function(){
+var R=[
+["Integrity","11:48 PM. Essay due at midnight. A friend says \"just have AI write it.\" What do you type?",[
+ ["Write my 5-page essay on the French Revolution.",0,"That's handing in work that isn't yours, and it's often easy to spot."],
+ ["Here's my thesis. What's the weakest part?",10,"You keep the work and sharpen your thinking. That's AI as a tool."],
+ ["Give me 5 sources I can cite.",3,"Risky. AI can invent sources that look real. Verify every one."]]],
+["Integrity","Your syllabus says nothing about AI. You...",[
+ ["Ask your professor what's allowed.",10,"Best move. Policies differ by class, and asking protects you."],
+ ["Use it only to study, not to write.",5,"Reasonable, but still confirm the policy."],
+ ["Assume it's fine.",0,"Silence isn't permission."]]],
+["Integrity","The AI says \"87% of students use AI daily.\" You...",[
+ ["Search for the original source first.",10,"Verify anything you'd cite. AI can make up numbers."],
+ ["Ask the AI if it's sure.",5,"Helps a little, but it can repeat the mistake. Check a real source."],
+ ["Put it in your paper.",0,"Confident is not the same as correct."]]],
+["Prompting","Which prompt gets the most useful answer?",[
+ ["Explain photosynthesis for my bio exam. Under 150 words, no jargon, use a kitchen analogy.",10,"Clear subject, goal, and limits."],
+ ["Explain photosynthesis.",5,"Better, but no goal or limits."],
+ ["Help with my bio exam.",0,"Too vague. The AI has to guess everything."]]],
+["Prompting","The first answer is too long and too formal. Best next move?",[
+ ["Reply: \"Shorter, casual tone, keep the two key points.\"",10,"A re-up. Treat the first answer as a draft."],
+ ["Start a brand new chat.",3,"Works, but you lose context. Refine instead."],
+ ["Accept it.",0,"The first answer is only a draft."]]],
+["Prompting","You want practice questions in a certain style. What helps most?",[
+ ["Paste one sample and say \"write 5 like this.\"",10,"Examples beat descriptions."],
+ ["Say \"make them hard.\"",3,"Hard in what way? Be specific."],
+ ["Say \"make them good.\"",0,"The AI can't guess what good means to you."]]],
+["Asking","A concept won't click. Best ask?",[
+ ["Explain it for a beginner, then use a basketball analogy.",10,"A mode of explaining plus your own interest makes it stick."],
+ ["Define it.",3,"Definitions rarely fix confusion."],
+ ["Do my homework on it.",0,"That skips the learning."]]],
+["Asking","Which ask best finds what you don't know yet?",[
+ ["Quiz me on chapter 4, one question at a time, no answers until I try.",10,"This finds real gaps."],
+ ["Summarize chapter 4.",3,"Helps review, but doesn't test you."],
+ ["Tell me I'm ready for the exam.",0,"That's flattery, not a test."]]],
+["Asking","You have a dense 20-page reading. Smart move?",[
+ ["Summarize it, then ask me 3 questions to check I got it.",10,"A summary plus a check keeps you honest."],
+ ["Summarize it so I can skip the reading.",3,"You'll miss details your exam may test."],
+ ["Write my reading response.",0,"That's not your work."]]],
+["Studying","Best way to make flashcards?",[
+ ["\"Turn my notes into 15 question-and-answer cards.\"",10,"Built from your class, not a generic deck."],
+ ["\"Make flashcards for biology.\"",3,"Generic cards may not match your course."],
+ ["Use the AI's cards without checking.",0,"Check them. AI makes errors."]]],
+["Studying","Which request makes the best study guide?",[
+ ["Here's my syllabus and notes. Make a one-page guide of key terms and likely questions.",10,"Your material in, a focused guide out."],
+ ["Make me a study guide.",3,"On what? Give it your material."],
+ ["Tell me what's on the test.",0,"The AI can't know your exam."]]],
+["Studying","You missed 4 questions on a practice quiz. Best follow-up?",[
+ ["Explain why each was wrong, then quiz me on those again.",10,"Learning from misses is the point of quizzes."],
+ ["Ask for the answers again.",3,"Seeing answers isn't the same as knowing them."],
+ ["Move on to a new topic.",0,"You'll repeat the same mistakes."]]]
+];
+var LV=[[0,"Curious"],[25,"Prompter"],[55,"Analyst"],[90,"Strategist"],[130,"AI Literate"]];
+var $=function(x){return document.getElementById(x)};
+var tag=document.querySelector("script[data-endpoint]");
+var EP=((tag&&tag.getAttribute("data-endpoint"))||"").replace(/\/$/,"");
+var track=function(e,d){if(window.pcTrack)window.pcTrack(e,d)};
+var i=0,xp=0,streak=0,done=false,order=[];
+function lvl(x){var l=0;LV.forEach(function(v,k){if(x>=v[0])l=k});return l}
+function pill(){var l=lvl(xp);$("lv").textContent="Level "+(l+1)+" "+LV[l][1];$("xp").textContent=xp+" XP"}
+function round(){
+  var r=R[i];done=false;
+  $("cat").textContent=r[0];$("rd").textContent="Round "+(i+1)+" of "+R.length;
+  $("pg").style.width=(i/R.length*100)+"%";$("q").textContent=r[1];
+  $("fb").hidden=true;$("hint").hidden=i>0;
+  var o=$("opts");o.innerHTML="";
+  order=r[2].map(function(_,k){return k}).sort(function(){return Math.random()-.5});
+  order.forEach(function(k){var b=document.createElement("button");b.type="button";b.className="opt";b.textContent=r[2][k][0];b.onclick=function(){pick(k,b)};o.appendChild(b)});
+}
+function pick(k,b){
+  if(done)return;done=true;
+  var r=R[i],a=r[2][k],p=a[1];
+  streak=p===10?streak+1:0;
+  var bonus=streak>1?Math.min(streak-1,3):0;
+  xp+=p+bonus;
+  Array.prototype.forEach.call($("opts").children,function(c,j){c.disabled=true;if(r[2][order[j]][1]===10)c.classList.add("best")});
+  b.classList.add("sel");
+  $("pts").textContent="+"+(p+bonus)+" XP"+(bonus?" (streak bonus +"+bonus+")":"");
+  $("msg").textContent=a[2];
+  $("nx").textContent=i===R.length-1?"See your results":"Next round";
+  $("fb").hidden=false;$("nx").focus();pill();
+  if(i===0)track("builder_used");
+  track("interaction","round_"+(i+1));
+}
+$("nx").onclick=function(){i++;if(i>=R.length)end();else round()};
+function end(){
+  $("play").hidden=true;$("end").hidden=false;
+  var l=lvl(xp);
+  $("el").textContent="Level "+(l+1)+": "+LV[l][1];
+  var best=0;try{best=+localStorage.getItem("pc_best")||0;if(xp>best){localStorage.setItem("pc_best",xp)}}catch(e){}
+  $("es").textContent=xp+" XP out of 150"+(best>xp?" (your best: "+best+")":"");
+  $("save").hidden=!EP;$("sm").textContent=EP?"":"Leaderboard opens soon.";
+  try{$("nick").value=localStorage.getItem("pc_name")||""}catch(e){}
+  track("interaction","finish_level_"+(l+1));
+}
+$("sv").onclick=function(){
+  var n=$("nick").value.trim();
+  if(n.replace(/[^A-Za-z0-9_ ]/g,"").trim().length<2){$("sm").textContent="Use 2 to 16 letters or numbers.";return}
+  try{localStorage.setItem("pc_name",n)}catch(e){}
+  $("sm").textContent="Saving...";
+  fetch(EP+"/score",{method:"POST",body:JSON.stringify({name:n,score:xp}),headers:{"Content-Type":"text/plain"}})
+   .then(function(r){if(!r.ok)throw 0;return r.json()})
+   .then(function(d){$("sm").textContent="You're #"+d.rank+" on the leaderboard.";board();track("interaction","submit_score")})
+   .catch(function(){$("sm").textContent="Couldn't reach the leaderboard. Try again."});
+};
+$("again").onclick=function(){i=0;xp=0;streak=0;pill();$("end").hidden=true;$("play").hidden=false;round();window.scrollTo(0,0)};
+function board(){
+  if(!EP){$("lbn").hidden=false;return}
+  fetch(EP+"/leaderboard").then(function(r){return r.json()}).then(function(rows){
+    var ol=$("lb");ol.innerHTML="";
+    if(!rows.length){$("lbn").textContent="No scores yet. Be the first.";$("lbn").hidden=false;return}
+    $("lbn").hidden=true;
+    rows.forEach(function(x){var li=document.createElement("li"),s=document.createElement("span"),e=document.createElement("em");s.textContent=x.name;e.textContent=x.score+" XP";li.appendChild(s);li.appendChild(e);ol.appendChild(li)});
+  }).catch(function(){$("lbn").hidden=false});
+}
+round();pill();board();
 })();
 </script>
-
-<!-- Set data-endpoint to your deployed collector URL (see README). Leave empty to disable tracking. -->
-<script src="tracker.js" data-endpoint="" defer></script>
 </body>
 </html>

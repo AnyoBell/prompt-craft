@@ -10,3 +10,9 @@ CREATE TABLE IF NOT EXISTS events (
   country TEXT                -- coarse, from Cloudflare
 );
 CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
+
+CREATE TABLE IF NOT EXISTS scores (
+  name  TEXT PRIMARY KEY COLLATE NOCASE,  -- public nickname
+  score INTEGER NOT NULL,                 -- best score, capped at 150 by the worker
+  ts    INTEGER NOT NULL
+);

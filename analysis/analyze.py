@@ -54,6 +54,10 @@ def main():
     mo = df[df.event == "module_open"].groupby("detail")["sid"].nunique().sort_index()
     out += [f"  Module {k:<4}{v:>5}  {pct(v, n)}" for k, v in mo.items()] or ["  none yet"]
 
+    out.append("\nInteractions (unique visits)")
+    ia = df[df.event == "interaction"].groupby("detail")["sid"].nunique().sort_values(ascending=False)
+    out += [f"  {k:<16}{v:>5}  {pct(v, n)}" for k, v in ia.items()] or ["  none yet"]
+
     out.append("\nSections reached")
     sv = df[df.event == "section_view"].groupby("detail")["sid"].nunique().sort_values(ascending=False)
     out += [f"  {k:<10}{v:>5}  {pct(v, n)}" for k, v in sv.items()] or ["  none yet"]

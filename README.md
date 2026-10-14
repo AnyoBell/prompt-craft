@@ -1,6 +1,6 @@
 # Prompt Craft
 
-A four-module course site on using AI well for studying: academic integrity, structuring prompts, what to ask, and studying with AI. Static site plus a small privacy-respecting analytics collector.
+An online game that builds AI literacy: academic integrity, prompting, asking, and studying. Players earn XP, level up, and compete on a campus leaderboard. Static site plus a small collector for analytics and scores.
 
 ```
 site/        the course website (plain HTML, no build step) and tracker.js
@@ -44,7 +44,7 @@ python analysis/analyze.py --out report.txt
 
 Or run it on an exported file: `python analysis/analyze.py --file events.json`.
 
-## What gets tracked
+## Leaderboard\n\nScores are submitted from the browser, so a technical player could fake one. That's fine for a friendly campus game. If prizes or grades depend on rankings, move answer checking to the server.\n\n## What gets tracked
 
 Page views, module opens, FAQ opens, prompt-builder use (never the text), sections reached, reserve-button clicks. See `docs/PRIVACY.md`.
 
